@@ -6,10 +6,10 @@ y muestra la fuente primaria para validación humana (ADR 0002).
 """
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from ..envelope import ok
-from ..services import tariff
+from ..services import search, tariff
 
 router = APIRouter(tags=["arancel"])
 
@@ -22,6 +22,22 @@ def normalize(code: str):
     """
     return ok(tariff.normalize_code(code),
               trace=[{"source": "OMA/HS", "label": "regla_estructural"}])
+
+
+# Debe declararse ANTES de /api/tariff/{code}, o "search" se captura como código.
+@router.get("/api/tariff/search")
+def search_tariff(q: str = Query(..., min_length=1, max_length=120),
+                  lang: str = Query("es"), limit: int = Query(5, ge=1, le=50)):
+    """Búsqueda por texto o código contra el índice full-text (tsvector)."""
+    rows, index_available = search.search(q, lang=lang, kinds=("hs", "fraccion", "nico"), limit=limit)
+    warnings = ["Resultado informativo; no sustituye una determinación legal de clasificación."]
+    if not index_available:
+        warnings.append("no confirmable: índice arancelario no disponible; ejecuta importadores SNICE/VUCEM")
+    data = [{"display_code": r["entity_id"], "level": r["kind"],
+             "description": r["title"], "score": r["score"]} for r in rows]
+    return ok(data, trace=[{"source": "WCO/WITS", "label": "hs_reference"},
+                           {"source": "VUCEM", "label": "clasificador_tigie"},
+                           {"source": "SNICE", "label": "nico_ligie"}], warnings=warnings)
 
 
 @router.get("/api/tariff/{code}")

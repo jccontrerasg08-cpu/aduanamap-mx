@@ -4,6 +4,7 @@ API viva -> snapshot normalizado en PostgreSQL -> respuesta `stale` con timestam
 from __future__ import annotations
 
 import json
+import re
 
 from fastapi import APIRouter
 
@@ -15,6 +16,7 @@ router = APIRouter(tags=["banxico"])
 
 _CACHE_KEY = "banxico:fix:latest"
 _CACHE_TTL = 15 * 60
+_SERIES_RE = re.compile(r"^[A-Za-z]{2}\d{1,8}$")
 
 _LATEST_FROM_DB = """
 SELECT date, value, published_at
@@ -65,3 +67,25 @@ def fix_latest():
         trace=[{"source": "Banxico", "label": "SIE_API"}],
         warnings=["Banxico FIX temporalmente no disponible. Ejecuta el worker banxico_fix o valida en el SIE."],
     )
+
+
+@router.get("/api/banxico/series/{series_id}/latest")
+def series_latest(series_id: str):
+    """Último dato de una serie del SIE almacenada en exchange_rate."""
+    if not _SERIES_RE.match(series_id):
+        return ok(None, warnings=["series_id inválido (formato SIE, p.ej. SF43718)"])
+    series_id = series_id.upper()
+    with db.connection() as conn:
+        if conn is None:
+            return ok(None, warnings=["stale: base de datos no disponible"])
+        try:
+            with conn.cursor() as cur:
+                cur.execute(_LATEST_FROM_DB, (series_id,))
+                row = cur.fetchone()
+                if row is None:
+                    return ok(None, warnings=[f"no confirmable: serie {series_id} sin datos cargados"])
+                date, value, _published = row
+        except Exception:
+            return ok(None, warnings=["stale: series Banxico aún no cargadas"])
+    return ok({"series_id": series_id, "date": date.isoformat(), "value": float(value)},
+              trace=[{"source": "Banxico", "label": "SIE_API"}])
