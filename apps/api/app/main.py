@@ -8,7 +8,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import banxico, health, sources
+from .routers import banxico, health, sources, tariff
 
 app = FastAPI(
     title="AduanaMap MX API",
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(sources.router)
 app.include_router(banxico.router)
+app.include_router(tariff.router)
 
 
 @app.get("/", tags=["ops"])
@@ -38,6 +39,7 @@ def root():
     return {
         "name": "AduanaMap MX API",
         "docs": "/docs",
-        "endpoints": ["/api/healthz", "/api/sources/status", "/api/banxico/fix/latest"],
+        "endpoints": ["/api/healthz", "/api/sources/status", "/api/banxico/fix/latest",
+                      "/api/tariff/normalize/{code}", "/api/tariff/{code}"],
         "disclaimer": "Herramienta informativa. No sustituye asesoría legal ni pedimento.",
     }

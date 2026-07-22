@@ -14,7 +14,9 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [x] Encapsular núcleo ETL existente (`workers/comex_bridge.py`) — SNICE/VUCEM/ANAM/DOF/HS ya implementados en `comercio-exterior-mexico`
 - [x] Migrador DuckDB→Postgres (`workers/migrate_duckdb_to_pg.py`) — 22,531 filas curadas listas (dry-run verificado)
 - [ ] Ejecutar migración real contra Postgres (levantar `docker compose up -d db`)
-- [ ] `/api/tariff/search`, `/api/tariff/{code}`, `/api/agreements/{slug}`
+- [x] `/api/tariff/normalize/{code}` (desglose determinista HS→Fracción→NICO)
+- [x] `/api/tariff/{code}` (lookup versionado con `no confirmable` cuando falta catálogo)
+- [ ] `/api/tariff/search`, `/api/agreements/{slug}`
 
 ## Fase 3 — Frontend público
 - [ ] Landing bilingüe
