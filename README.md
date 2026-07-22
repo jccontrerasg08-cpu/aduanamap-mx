@@ -68,7 +68,9 @@ psql "$DATABASE_URL" -f core/migrations/0001_init.sql
       `mx_tariff_fraction`, `mx_nico`, `etl_run`, `etl_error_log`
 - [x] API: envelope compartido + `/api/healthz` + `/api/sources/status` + `/api/banxico/fix/latest`
 - [x] Worker Banxico FIX (con snapshot crudo + manifest + fallback `stale`)
-- [ ] Importadores SNICE / VUCEM / ANAM / DOF
+- [x] Núcleo ETL: encapsulado desde `comercio-exterior-mexico` (`workers/comex_bridge.py`) +
+      migrador DuckDB→Postgres (`workers/migrate_duckdb_to_pg.py`) — ver [docs/architecture/etl-core.md](docs/architecture/etl-core.md)
+- [ ] Ejecutar migración real (22,531 filas curadas ya disponibles: 7,859 fracciones, 6,294 NICOs, 8,358 HS, 20 tratados)
 - [ ] Frontend: mapa mundial + página de país
 - [ ] Estimador de costo aterrizado
 

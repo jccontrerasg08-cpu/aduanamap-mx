@@ -11,10 +11,9 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [ ] CI (lint + test + typecheck)
 
 ## Fase 2 — API y datos
-- [ ] Importador SNICE (LIGIE / NICO)
-- [ ] Importador VUCEM (clasificador TIGIE)
-- [ ] Importador ANAM (tratados / guías)
-- [ ] Watcher DOF (comercio exterior)
+- [x] Encapsular núcleo ETL existente (`workers/comex_bridge.py`) — SNICE/VUCEM/ANAM/DOF/HS ya implementados en `comercio-exterior-mexico`
+- [x] Migrador DuckDB→Postgres (`workers/migrate_duckdb_to_pg.py`) — 22,531 filas curadas listas (dry-run verificado)
+- [ ] Ejecutar migración real contra Postgres (levantar `docker compose up -d db`)
 - [ ] `/api/tariff/search`, `/api/tariff/{code}`, `/api/agreements/{slug}`
 
 ## Fase 3 — Frontend público
