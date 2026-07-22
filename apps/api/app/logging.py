@@ -40,6 +40,10 @@ def configure() -> None:
     root.handlers.clear()
     root.addHandler(handler)
     root.setLevel(logging.INFO)
+    # Quiet chatty third-party loggers so our structured logs stay signal, not noise
+    # (httpx logs one INFO line per request; urllib3 is similar).
+    for noisy in ("httpx", "httpcore", "urllib3"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
     _configured = True
 
 
