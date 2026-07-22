@@ -1,3 +1,7 @@
+// page.tsx — public landing page (Server Component).
+// Renders the bilingual hero + section nav (mapa, arancel, calculadora) and
+// probes the API's /api/healthz to show live system status. getHealth() degrades
+// to null on any fetch error so the page always renders, even with the API down.
 async function getHealth() {
   const base = process.env.API_BASE_URL ?? "http://localhost:8000";
   try {

@@ -1,3 +1,6 @@
+// tsconfig.json — TypeScript config for the Next.js web app.
+// Strict mode on; bundler module resolution; the Next.js TS plugin; and the
+// @schemas/* path alias mapping to packages/schemas/ts for the shared envelope.
 {
   "compilerOptions": {
     "target": "ES2020",

@@ -1,3 +1,7 @@
+# workers/pyproject.toml — packaging for the ETL workers.
+# Declares the `aduanamap-workers` package (installed by its Dockerfile and CI),
+# runtime deps (httpx, psycopg) plus optional extras: [dev] (pytest, ruff),
+# [xlsx] (openpyxl for SNICE/VUCEM) and [html] (selectolax for ANAM/DOF parsing).
 [project]
 name = "aduanamap-workers"
 version = "0.1.0"

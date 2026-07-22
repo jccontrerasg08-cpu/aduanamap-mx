@@ -35,8 +35,9 @@ aduanamap-mx/
 └── docs/{architecture,decisions}/
 ```
 
-Ver [docs/architecture/overview.md](docs/architecture/overview.md) y
-[docs/decisions/0001-lean-scaffold.md](docs/decisions/0001-lean-scaffold.md).
+Ver [docs/architecture/overview.md](docs/architecture/overview.md),
+[docs/decisions/0001-lean-scaffold.md](docs/decisions/0001-lean-scaffold.md) y
+[docs/references.md](docs/references.md) (buenas prácticas aplicadas y su fuente).
 
 ## Quick start
 

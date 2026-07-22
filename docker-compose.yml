@@ -1,3 +1,10 @@
+# docker-compose.yml — local dev stack for AduanaMap MX.
+# Brings up Postgres+PostGIS (auto-applies core/migrations on first boot), Redis,
+# the FastAPI api, and the ETL workers image. db/redis expose healthchecks so api
+# and workers only start once dependencies are ready. Usage:
+#   docker compose up -d db redis   # datastores
+#   docker compose up api           # API at http://localhost:8000/docs
+#   docker compose run --rm workers python -m workers.banxico_fix
 services:
   db:
     image: postgis/postgis:16-3.4

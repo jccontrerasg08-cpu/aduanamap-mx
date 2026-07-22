@@ -1,3 +1,7 @@
+# apps/api/pyproject.toml — packaging + tooling for the FastAPI API.
+# Declares the `aduanamap-api` package (installed by its Dockerfile and CI),
+# runtime deps (fastapi, uvicorn, pydantic, httpx, redis, psycopg), the optional
+# [dev] extra (pytest, ruff, mypy), and ruff config (line-length 100).
 [project]
 name = "aduanamap-api"
 version = "0.1.0"

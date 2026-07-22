@@ -1,3 +1,7 @@
+# .github/workflows/ci.yml — continuous integration.
+# On every PR and push to main: lint (ruff) + test (pytest, full suite with rate
+# limiting disabled) for the Python api/workers, and a typecheck for the web app
+# that self-skips until the frontend has a lockfile. Keeps main always green.
 name: CI
 
 on:

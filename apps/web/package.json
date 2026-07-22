@@ -2,6 +2,7 @@
   "name": "aduanamap-web",
   "version": "0.1.0",
   "private": true,
+  "description": "Next.js public web app for AduanaMap MX (mapa mundial, país, tratado, explorador HS/Fracción/NICO, calculadora). Consumes the FastAPI API and renders the data/source_trace/warnings envelope bilingually (es/en).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

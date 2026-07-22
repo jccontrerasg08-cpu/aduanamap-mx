@@ -1,3 +1,7 @@
+# workers/Dockerfile — container image for the ETL workers.
+# One image runs any job via `docker compose run --rm workers python -m workers.<job>`.
+# Installs the `aduanamap-workers` package from pyproject, copies the workers/ tree,
+# and defaults to the Banxico FIX job. Real cron scheduling is defined in infra/.
 FROM python:3.12-slim
 
 WORKDIR /app

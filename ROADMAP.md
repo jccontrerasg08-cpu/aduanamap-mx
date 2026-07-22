@@ -34,7 +34,8 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [ ] Accesibilidad AA + SEO (sitemap, hreflang es/en)
 - [ ] Observabilidad (OTel, freshness alerts)
 - [x] Seguridad base: rate limiting 429 + Retry-After, validación Pydantic, CORS por entorno, logs sin secretos
-- [ ] Headers CSP/HSTS, escaneo SCA, ASVS L2 completo
+- [x] Headers CSP/HSTS + hardening (`SecurityHeadersMiddleware`, [ADR 0003](docs/decisions/0003-security-headers.md))
+- [ ] Escaneo SCA (Trivy/Semgrep), ASVS L2 completo
 - [ ] Beta pública
 
 ## Reglas no negociables

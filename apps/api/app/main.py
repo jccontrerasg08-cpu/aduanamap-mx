@@ -15,6 +15,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from . import envelope, ratelimit
 from .config import get_settings
 from .logging import get_logger
+from .security import SecurityHeadersMiddleware
 from .routers import agreements, banxico, calculator, classify, countries, health, sources, tariff, wiki
 
 log = get_logger("api")
@@ -73,6 +74,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(RateLimitMiddleware)
+
+# Added last → outermost, so hardening headers are present on every response,
+# including 429s and CORS preflights.
+app.add_middleware(SecurityHeadersMiddleware)
 
 
 # ── Fallback: unhandled errors still return the envelope shape ───────────────
