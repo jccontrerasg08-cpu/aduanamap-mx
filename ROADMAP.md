@@ -16,7 +16,13 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [ ] Ejecutar migración real contra Postgres (levantar `docker compose up -d db`)
 - [x] `/api/tariff/normalize/{code}` (desglose determinista HS→Fracción→NICO)
 - [x] `/api/tariff/{code}` (lookup versionado con `no confirmable` cuando falta catálogo)
-- [ ] `/api/tariff/search`, `/api/agreements/{slug}`
+- [x] `/api/tariff/search` (full-text tsvector), `/api/agreements/{slug}`
+- [x] `/api/map/countries`, `/api/countries/{iso3}`, `/api/countries/{iso3}/agreements`
+- [x] `/api/classify/suggest` (capa IA estrecha: solo sugerencia), `/api/wiki/{slug}`
+- [x] `/api/banxico/series/{id}/latest`, `/api/calculator/estimate` (valor en aduana determinista)
+- [x] Migración 0002 (tariff_rate, authority, rule_of_origin, wiki_page, search_index, calculator_case…)
+- [x] Workers con capture robusto (retry/backoff + etl_run/etl_error_log): snice, vucem, anam, dof
+- [ ] Escribir parsers de normalización por fuente (requiere snapshot real de cada formato)
 
 ## Fase 3 — Frontend público
 - [ ] Landing bilingüe
@@ -27,7 +33,8 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 ## Fase 4 — Endurecimiento
 - [ ] Accesibilidad AA + SEO (sitemap, hreflang es/en)
 - [ ] Observabilidad (OTel, freshness alerts)
-- [ ] Seguridad (headers, rate limiting 429 + Retry-After, ASVS L2)
+- [x] Seguridad base: rate limiting 429 + Retry-After, validación Pydantic, CORS por entorno, logs sin secretos
+- [ ] Headers CSP/HSTS, escaneo SCA, ASVS L2 completo
 - [ ] Beta pública
 
 ## Reglas no negociables

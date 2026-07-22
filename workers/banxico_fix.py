@@ -18,7 +18,8 @@ import sys
 from datetime import datetime, timezone
 
 from workers.common import db as wdb
-from workers.common.manifest import preserve, sha256_bytes
+from workers.common.http import fetch as http_fetch
+from workers.common.manifest import preserve
 
 PARSER_VERSION = "banxico_fix@1"
 SERIE = os.getenv("BANXICO_FIX_SERIE", "SF43718")
@@ -29,18 +30,8 @@ SIE_URL = f"https://www.banxico.org.mx/SieAPIRest/service/v1/series/{SERIE}/dato
 def fetch() -> bytes | None:
     if not TOKEN:
         return None
-    try:
-        import httpx
-    except Exception:
-        return None
-    headers = {"Bmx-Token": TOKEN, "User-Agent": "AduanaMapMX-ETL/0.1 (+contact)"}
-    try:
-        resp = httpx.get(SIE_URL, headers=headers, timeout=10)
-        resp.raise_for_status()
-        return resp.content
-    except Exception as exc:  # noqa: BLE001
-        print(f"[banxico_fix] fetch failed: {exc}", file=sys.stderr)
-        return None
+    # Robust fetch: identifiable UA, timeout, retry/backoff on transient errors.
+    return http_fetch(SIE_URL, headers={"Bmx-Token": TOKEN})
 
 
 def parse(payload: bytes) -> tuple[str, float] | None:
@@ -78,26 +69,44 @@ def run() -> int:
     payload = fetch()
 
     if payload is None:
-        print("[banxico_fix] DRY-RUN — no BANXICO_TOKEN (64 chars) set. "
-              "Would fetch, snapshot, and upsert the FIX. Configure .env to run for real.")
-        return 0
+        if not TOKEN:
+            print("[banxico_fix] DRY-RUN — no BANXICO_TOKEN (64 chars) set. "
+                  "Would fetch, snapshot, and upsert the FIX. Configure .env to run for real.")
+            return 0
+        # Token present but fetch failed after retries → record the failed run so
+        # /api/sources/status shows the source as unhealthy, then fall back.
+        with wdb.connection() as conn:
+            run_id = wdb.start_run(conn, "banxico")
+            wdb.log_error(conn, run_id, severity="error", stage="fetch",
+                          message="SIE fetch failed after retries", error_json={"url": SIE_URL})
+            wdb.finish_run(conn, run_id, status="error")
+        print("[banxico_fix] fetch failed after retries; previous snapshot remains authoritative.")
+        return 1
 
     snap = preserve("banxico", SIE_URL, payload, "application/json", PARSER_VERSION)
     print(f"[banxico_fix] snapshot {snap.storage_key} sha256={snap.sha256[:12]}…")
 
-    parsed = parse(payload)
-    if parsed is None:
-        print("[banxico_fix] nothing parsed; preserving snapshot only.")
-        return 1
-
-    date_iso, value = parsed
     with wdb.connection() as conn:
+        run_id = wdb.start_run(conn, "banxico")
+        parsed = parse(payload)
+        if parsed is None:
+            wdb.record_manifest(
+                conn, source_name="banxico", source_url=SIE_URL, sha256=snap.sha256,
+                parser_version=PARSER_VERSION, status="error", records_loaded=0,
+            )
+            wdb.log_error(conn, run_id, severity="error", stage="parse",
+                          message="unexpected SIE payload shape")
+            wdb.finish_run(conn, run_id, status="error", rows_read=1)
+            print("[banxico_fix] nothing parsed; preserving snapshot only.")
+            return 1
+
+        date_iso, value = parsed
         manifest_id = wdb.record_manifest(
-            conn, source_name="banxico", source_url=SIE_URL,
-            sha256=snap.sha256, parser_version=PARSER_VERSION,
-            status="ok", records_loaded=1, effective_date=date_iso,
+            conn, source_name="banxico", source_url=SIE_URL, sha256=snap.sha256,
+            parser_version=PARSER_VERSION, status="ok", records_loaded=1, effective_date=date_iso,
         )
         rows = upsert(conn, date_iso, value, manifest_id)
+        wdb.finish_run(conn, run_id, status="ok", rows_read=1, rows_loaded=rows)
         if conn is None:
             print(f"[banxico_fix] parsed FIX {value} @ {date_iso} (no DB — not persisted).")
         else:

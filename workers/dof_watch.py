@@ -1,19 +1,22 @@
-"""DOF — watcher de comercio exterior (Fase 2, stub).
+"""DOF — watcher de comercio exterior.
 
-El DOF es la fuente jurídica de publicación formal. Frecuencia sugerida: cada 30 min
-en horario laboral. Archivar PDF/HTML crudo; versionar decretos/modificaciones.
+El DOF es la fuente jurídica de publicación formal. Frecuencia sugerida: cada
+30 min en horario laboral. Capture stage live (archiva PDF/HTML crudo + manifest);
+la detección de decretos/modificaciones y su ligado a agreement_document /
+tariff_rate queda como TODO por depender del formato de la nota publicada.
 
-Run: python -m workers.dof_watch
+Run: DOF_COMEX_URL=<url> python -m workers.dof_watch
 """
 from __future__ import annotations
+
+from workers.common.source_job import capture_only
 
 PARSER_VERSION = "dof_watch@0"
 
 
 def run() -> int:
-    print("[dof_watch] TODO Fase 2 — detectar decretos/modificaciones de comercio exterior, "
-          "archivar snapshot, registrar manifest y ligar a agreement_document/tariff_rate.")
-    return 0
+    return capture_only("dof", "DOF_COMEX_URL", parser_version=PARSER_VERSION,
+                        content_type="text/html")
 
 
 if __name__ == "__main__":

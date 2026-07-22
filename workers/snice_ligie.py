@@ -1,20 +1,26 @@
-"""SNICE — LIGIE / NICO importer (Fase 2, stub).
+"""SNICE — LIGIE / NICO importer.
 
-Objetivo: normalizar fracciones de 8 dígitos y su NICO (quinto par → 10 dígitos),
-manejando la "compactación" donde varias fracciones convergen en una con distintos NICOs.
-Requiere versionado temporal (effective_from/to) y tablas de correlación.
+Capture stage is live (fetch + preserve + manifest + etl_run). The normalize
+stage — fracciones de 8 dígitos y su NICO (quinto par → 10 dígitos), con
+"compactación" donde varias fracciones convergen en una con distintos NICOs, y
+versionado temporal (effective_from/to) — queda como TODO por depender del
+formato exacto de la fuente (XLSX/HTML), que debe verificarse contra un snapshot
+real antes de escribir el parser.
 
-Run: python -m workers.snice_ligie
+Run: SNICE_LIGIE_URL=<url> python -m workers.snice_ligie
 """
 from __future__ import annotations
+
+from workers.common.source_job import capture_only
 
 PARSER_VERSION = "snice_ligie@0"
 
 
 def run() -> int:
-    print("[snice_ligie] TODO Fase 2 — descargar LIGIE/NICO, snapshot, normalizar "
-          "mx_tariff_fraction + mx_nico con versionado. Pipeline en workers/common/manifest.py.")
-    return 0
+    return capture_only(
+        "snice", "SNICE_LIGIE_URL", parser_version=PARSER_VERSION,
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
 
 if __name__ == "__main__":
