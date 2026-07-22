@@ -8,7 +8,7 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [x] Envelope `data / source_trace / warnings`
 - [x] `/api/healthz`, `/api/sources/status`, `/api/banxico/fix/latest`
 - [x] Worker Banxico FIX con snapshot + fallback `stale`
-- [ ] CI (lint + test + typecheck)
+- [x] CI (ruff lint + pytest + web typecheck) — `.github/workflows/ci.yml`
 
 ## Fase 2 — API y datos
 - [x] Encapsular núcleo ETL existente (`workers/comex_bridge.py`) — SNICE/VUCEM/ANAM/DOF/HS ya implementados en `comercio-exterior-mexico`

@@ -19,9 +19,11 @@ jobs:
           pip install ./apps/api ./workers
           pip install pytest ruff
       - name: Lint
-        run: ruff check apps/api/app workers
+        run: ruff check apps/api/app workers tests
       - name: Test
-        run: pytest tests/unit tests/api -q
+        run: pytest tests -q
+        env:
+          RATE_LIMIT_ENABLED: "0"
 
   web:
     runs-on: ubuntu-latest
