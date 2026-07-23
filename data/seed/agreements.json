@@ -1,0 +1,199 @@
+{
+  "_meta": {
+    "description": "Catálogo canónico de Tratados de Libre Comercio (TLC) de México y sus miembros, para sembrar las tablas agreement / agreement_member / agreement_source_claim. Miembros en ISO-3166 alpha-3 (socios de México; México es el país anfitrión y no se lista como miembro). Cargar con: python -m workers.seed_agreements",
+    "sources": [
+      "Secretaría de Economía (gob.mx/se) — red de TLC",
+      "SICE-OEA (sice.oas.org)",
+      "Wikipedia ES: Tratados de libre comercio de México",
+      "Prodensa blog (lista divulgativa, punto de partida del usuario)"
+    ],
+    "consulted_at": "2026-07-23",
+    "note": "El conteo total varía por criterio de fuente; ver source_claims. Los instrumentos 'superseded' se conservan por trazabilidad histórica."
+  },
+
+  "source_claims": [
+    { "source_name": "SE", "claim_type": "tlc_count", "claim_value": "14", "consulted_at": "2026-07-23", "notes": "Secretaría de Economía: 14 TLC con 52 países." },
+    { "source_name": "SE", "claim_type": "country_count", "claim_value": "52", "consulted_at": "2026-07-23" },
+    { "source_name": "ANAM", "claim_type": "tlc_count", "claim_value": "12", "consulted_at": "2026-07-23", "notes": "ANAM: 12 TLC con 46 países (criterio distinto de agrupación)." },
+    { "source_name": "ANAM", "claim_type": "country_count", "claim_value": "46", "consulted_at": "2026-07-23" },
+    { "source_name": "Wikipedia", "claim_type": "tlc_count", "claim_value": "13", "consulted_at": "2026-07-23", "notes": "13 TLC con 46 países (según artículo)." }
+  ],
+
+  "agreements": [
+    {
+      "slug": "t-mec",
+      "name_es": "Tratado entre México, Estados Unidos y Canadá (T-MEC)",
+      "name_en": "United States–Mexico–Canada Agreement (USMCA)",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2018-11-30",
+      "effective_date": "2020-07-01",
+      "members": ["USA", "CAN"],
+      "source_policy": "SE/SICE",
+      "notes": "Sustituye al TLCAN/NAFTA (1994). Revisión conjunta prevista en 2026."
+    },
+    {
+      "slug": "tlcuem",
+      "name_es": "TLC México–Unión Europea (TLCUEM)",
+      "name_en": "Mexico–European Union Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2000-03-23",
+      "effective_date": "2000-07-01",
+      "members": ["AUT","BEL","BGR","HRV","CYP","CZE","DNK","EST","FIN","FRA","DEU","GRC","HUN","IRL","ITA","LVA","LTU","LUX","MLT","NLD","POL","PRT","ROU","SVK","SVN","ESP","SWE"],
+      "source_policy": "SE/SICE",
+      "notes": "Modernización del Acuerdo Global concluida en 2025. Miembros = 27 Estados de la UE."
+    },
+    {
+      "slug": "tlc-aelc-efta",
+      "name_es": "TLC México–Asociación Europea de Libre Comercio (AELC/EFTA)",
+      "name_en": "Mexico–EFTA Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2000-11-27",
+      "effective_date": "2001-10-01",
+      "members": ["ISL", "LIE", "NOR", "CHE"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "tlc-mexico-colombia",
+      "name_es": "TLC México–Colombia (antes G-3)",
+      "name_en": "Mexico–Colombia Free Trade Agreement (former G-3)",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "1994-06-13",
+      "effective_date": "1995-01-01",
+      "members": ["COL"],
+      "source_policy": "SE/SICE",
+      "notes": "Originalmente G-3 (México-Colombia-Venezuela); Venezuela se retiró en 2006."
+    },
+    {
+      "slug": "tlc-mexico-chile",
+      "name_es": "TLC México–Chile",
+      "name_en": "Mexico–Chile Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "1998-04-17",
+      "effective_date": "1999-08-01",
+      "members": ["CHL"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "tlc-mexico-israel",
+      "name_es": "TLC México–Israel",
+      "name_en": "Mexico–Israel Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2000-04-10",
+      "effective_date": "2000-07-01",
+      "members": ["ISR"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "tlc-mexico-uruguay",
+      "name_es": "TLC México–Uruguay",
+      "name_en": "Mexico–Uruguay Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2003-11-15",
+      "effective_date": "2004-07-15",
+      "members": ["URY"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "aae-mexico-japon",
+      "name_es": "Acuerdo de Asociación Económica México–Japón (AAE)",
+      "name_en": "Mexico–Japan Economic Partnership Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2004-09-17",
+      "effective_date": "2005-04-01",
+      "members": ["JPN"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "aci-mexico-peru",
+      "name_es": "Acuerdo de Integración Comercial México–Perú",
+      "name_en": "Mexico–Peru Trade Integration Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2011-04-06",
+      "effective_date": "2012-02-01",
+      "members": ["PER"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "tlc-mexico-centroamerica",
+      "name_es": "TLC México–Centroamérica",
+      "name_en": "Mexico–Central America Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2011-11-22",
+      "effective_date": "2013-07-01",
+      "members": ["CRI", "SLV", "GTM", "HND", "NIC"],
+      "source_policy": "SE/SICE",
+      "notes": "Unifica y sustituye los TLC bilaterales previos con Costa Rica (1995), Nicaragua (1998) y Triángulo del Norte (2001). Fechas de entrada por país entre 2012 y 2013."
+    },
+    {
+      "slug": "tlc-mexico-panama",
+      "name_es": "TLC México–Panamá",
+      "name_en": "Mexico–Panama Free Trade Agreement",
+      "type": "FTA",
+      "status": "active",
+      "signed_date": "2014-04-03",
+      "effective_date": "2015-07-01",
+      "members": ["PAN"],
+      "source_policy": "SE/SICE"
+    },
+    {
+      "slug": "alianza-del-pacifico",
+      "name_es": "Alianza del Pacífico (Protocolo Comercial)",
+      "name_en": "Pacific Alliance (Commercial Protocol)",
+      "type": "regional",
+      "status": "active",
+      "signed_date": "2014-02-10",
+      "effective_date": "2016-05-01",
+      "members": ["CHL", "COL", "PER"],
+      "source_policy": "SE/SICE",
+      "notes": "Bloque México-Chile-Colombia-Perú. Costa Rica en proceso de adhesión."
+    },
+    {
+      "slug": "cptpp-tipat",
+      "name_es": "Tratado Integral y Progresista de Asociación Transpacífico (CPTPP/TIPAT)",
+      "name_en": "Comprehensive and Progressive Agreement for Trans-Pacific Partnership (CPTPP)",
+      "type": "plurilateral",
+      "status": "active",
+      "signed_date": "2018-03-08",
+      "effective_date": "2018-12-30",
+      "members": ["AUS", "BRN", "CAN", "CHL", "JPN", "MYS", "NZL", "PER", "SGP", "VNM", "GBR"],
+      "source_policy": "SE/SICE",
+      "notes": "Reino Unido (GBR) adhirió en diciembre de 2024."
+    },
+    {
+      "slug": "tlc-mexico-costa-rica-1995",
+      "name_es": "TLC México–Costa Rica (1995)",
+      "name_en": "Mexico–Costa Rica FTA (1995)",
+      "type": "FTA",
+      "status": "superseded",
+      "signed_date": "1994-04-05",
+      "effective_date": "1995-01-01",
+      "members": ["CRI"],
+      "source_policy": "SICE",
+      "superseded_by": "tlc-mexico-centroamerica",
+      "notes": "Absorbido por el TLC México–Centroamérica (2013)."
+    },
+    {
+      "slug": "tlc-triangulo-norte-2001",
+      "name_es": "TLC México–Triángulo del Norte (2001)",
+      "name_en": "Mexico–Northern Triangle FTA (2001)",
+      "type": "FTA",
+      "status": "superseded",
+      "signed_date": "2000-06-29",
+      "effective_date": "2001-03-15",
+      "members": ["SLV", "GTM", "HND"],
+      "source_policy": "SICE",
+      "superseded_by": "tlc-mexico-centroamerica",
+      "notes": "Absorbido por el TLC México–Centroamérica (2013)."
+    }
+  ]
+}
