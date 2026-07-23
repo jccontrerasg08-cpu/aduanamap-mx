@@ -1,7 +1,26 @@
 # ADR 0004 — Mapa mundial interactivo (MapLibre) y datos por país
 
-- **Estado:** propuesto (planeación; aún no se escribe código de mapa)
+- **Estado:** aceptado e implementado (mapa funcional; datos por Postgres pendientes de ejecutar)
 - **Fecha:** 2026-07-22
+
+## Refinamientos al implementar (vs. el plan original)
+
+1. **Clave de unión = `ccn3` (ISO numérico), no `ISO_A3_EH`.** Se eligió
+   [topojson/world-atlas](https://github.com/topojson/world-atlas) 50m, cuyas features
+   usan el **ISO numérico** como `id`. Unir por `ccn3` → [mledoze/countries](https://github.com/mledoze/countries)
+   (`world-countries`) es aún más robusto: esquiva por completo el `ISO_A3=-99`.
+   Verificado: Francia/Noruega/México/USA presentes (236 países unidos).
+2. **Geometría = asset estático, no endpoint API.** El GeoJSON (público, cambia poco)
+   se sirve desde `apps/web/public/geo/countries-50m.geojson`; lo dinámico (relación
+   con MX) viene de `/api/map/countries`. Más rápido (CDN) y sin cargar la API. Se
+   **descartó** `/api/map/geometry`.
+3. **Territorios sin código UN** (Kosovo, Somaliland, N. Cyprus, 2 slivers) se conservan
+   como features **neutrales** (`iso3=null`): sin color ni interacción, pero sin huecos.
+4. **`seed_countries.py` / `geometry_import.py`** leen ese mismo GeoJSON (una sola fuente
+   de verdad) para poblar `country` y `country_geometry` cuando haya Postgres.
+5. **Basemap:** el estilo autocontenido (océano + países) hace que el mapa funcione ya,
+   sin tile server ni API key. PMTiles queda cableado (protocolo + `NEXT_PUBLIC_MAP_STYLE_URL`);
+   generar un `planet.pmtiles` completo es un trabajo aparte (planetiler + OSM), diferido.
 - **Contexto de sesión:** el mapa es "una parte muy delicada". Esta ADR es el
   resultado de investigar múltiples repos de GitHub antes de escribir, siguiendo
   las reglas del proyecto (nunca inventar, versionar, trazar fuente, degradar,
