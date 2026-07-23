@@ -14,6 +14,7 @@ export function Nav({ lang }: { lang: Lang }) {
       <Link href={`/mapa${q}`}>{t(lang, "nav_map")}</Link>
       <Link href={`/arancel${q}`}>{t(lang, "nav_tariff")}</Link>
       <Link href={`/calculadora${q}`}>{t(lang, "nav_calc")}</Link>
+      <Link href={`/fuentes${q}`}>{t(lang, "sources")}</Link>
       <Link href={`?lang=${other}`} className="badge" aria-label={`Switch language to ${other}`}>
         {other.toUpperCase()}
       </Link>
