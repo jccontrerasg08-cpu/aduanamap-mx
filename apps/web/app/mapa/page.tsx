@@ -9,7 +9,7 @@ import { apiGet, type MapCountry } from "@/lib/api";
 import { normalizeLang, t } from "@/lib/i18n";
 import { Shell } from "@/components/Shell";
 import { Trace } from "@/components/Trace";
-import { WorldMap } from "@/components/WorldMap";
+import { WorldMapLazy } from "@/components/WorldMapLazy";
 
 export const metadata = { title: "Mapa mundial — AduanaMap MX" };
 
@@ -32,7 +32,7 @@ export default async function MapaPage({
         siguen a Natural Earth y no constituyen una postura política.
       </p>
 
-      <WorldMap countries={countries} />
+      <WorldMapLazy countries={countries} />
 
       <Trace env={env} lang={lang} />
 

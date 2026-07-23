@@ -36,8 +36,9 @@ aduanamap-mx/
 ```
 
 Ver [docs/architecture/overview.md](docs/architecture/overview.md),
-[docs/decisions/0001-lean-scaffold.md](docs/decisions/0001-lean-scaffold.md) y
-[docs/references.md](docs/references.md) (buenas prácticas aplicadas y su fuente).
+[docs/decisions/0001-lean-scaffold.md](docs/decisions/0001-lean-scaffold.md),
+[docs/references.md](docs/references.md) (buenas prácticas aplicadas y su fuente) y
+**[docs/report-compliance.md](docs/report-compliance.md)** (estado real contra el informe).
 
 ## Quick start
 
