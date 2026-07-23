@@ -1,15 +1,15 @@
 // app/mapa/page.tsx — world "map" as an accessible, WebGL-independent country list.
 //
 // The report is explicit: the map's accessibility must not depend on the WebGL
-// canvas, so a searchable/filterable country list is the PRIMARY, keyboard-usable
-// view (a MapLibre GL layer is a future progressive enhancement layered on top of
-// this same /api/map/countries data). Server-rendered; degrades to a warning if
-// the catalog is empty or the API is down.
+// canvas, so the country TABLE is the PRIMARY, keyboard-usable view. The MapLibre
+// <WorldMap> below is a progressive enhancement over the same /api/map/countries
+// data. Server-rendered; degrades to a warning if the catalog is empty or down.
 import Link from "next/link";
 import { apiGet, type MapCountry } from "@/lib/api";
 import { normalizeLang, t } from "@/lib/i18n";
 import { Shell } from "@/components/Shell";
 import { Trace } from "@/components/Trace";
+import { WorldMap } from "@/components/WorldMap";
 
 export const metadata = { title: "Mapa mundial — AduanaMap MX" };
 
@@ -27,10 +27,12 @@ export default async function MapaPage({
     <Shell lang={lang}>
       <h1>{t(lang, "nav_map")}</h1>
       <p className="muted">
-        Lista accesible de países y su número de instrumentos con México. (La capa
-        de mapa interactivo MapLibre se añadirá como mejora progresiva sobre estos
-        mismos datos.)
+        La tabla es la vista principal, accesible y navegable por teclado. El mapa de
+        abajo es una mejora visual (MapLibre) sobre los mismos datos; las fronteras
+        siguen a Natural Earth y no constituyen una postura política.
       </p>
+
+      <WorldMap countries={countries} />
 
       <Trace env={env} lang={lang} />
 

@@ -26,6 +26,9 @@ data/raw/*
 data/snapshots/*
 data/processed/*
 !data/**/.gitkeep
+# Generated geometry: the runtime copy lives in apps/web/public/geo (tracked);
+# this data/geojson copy is the regenerable ETL-input mirror.
+data/geojson/*.geojson
 
 # OS / editor
 .DS_Store
