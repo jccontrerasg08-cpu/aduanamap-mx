@@ -36,10 +36,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Web typecheck (skips if no lockfile yet)
+      - name: Web build (generates next-env.d.ts, typechecks, lints, compiles routes)
         working-directory: apps/web
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
         run: |
           if [ -f package.json ]; then
-            npm install --no-audit --no-fund
-            npm run typecheck --if-present
+            npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+            npm run build
           fi

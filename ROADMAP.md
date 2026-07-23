@@ -25,10 +25,11 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 - [ ] Escribir parsers de normalización por fuente (requiere snapshot real de cada formato)
 
 ## Fase 3 — Frontend público
-- [ ] Landing bilingüe
-- [ ] Mapa mundial (MapLibre) + fallback accesible (lista de países)
-- [ ] Página de país / tratado / fracción-NICO
-- [ ] Estimador de costo aterrizado (conservador, `not_confirmable` por defecto)
+- [x] Landing bilingüe (es/en) + estado de API
+- [x] Mapa mundial como lista accesible de países (fallback sin WebGL) — [ ] capa MapLibre (mejora progresiva)
+- [x] Página de país / tratado / explorador arancelario (fracción-NICO)
+- [x] Estimador de costo aterrizado (valor en aduana determinista, `not_confirmable` por defecto)
+- [x] Cliente API con fallback, trazabilidad visible (`Trace`), accesibilidad base, tema claro/oscuro
 
 ## Fase 4 — Endurecimiento
 - [ ] Accesibilidad AA + SEO (sitemap, hreflang es/en)

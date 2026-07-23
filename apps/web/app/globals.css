@@ -1,0 +1,102 @@
+/* globals.css — base design tokens + minimal, accessible styling.
+   No CSS framework: a small token set keeps the bundle light and the look
+   consistent. Theme-aware (light/dark via prefers-color-scheme). Focus states
+   are always visible for keyboard users (WCAG). */
+
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #5a5f66;
+  --border: #e2e5e9;
+  --card: #f7f8fa;
+  --accent: #1b6b3a;
+  --accent-fg: #ffffff;
+  --warn-bg: #fff7e6;
+  --warn-fg: #7a4f00;
+  --warn-border: #f0d089;
+  --radius: 10px;
+  --maxw: 960px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --fg: #e8eaed;
+    --muted: #9aa0a6;
+    --border: #2a2f36;
+    --card: #171a1f;
+    --accent: #4cc27a;
+    --accent-fg: #0f1115;
+    --warn-bg: #2a2213;
+    --warn-fg: #f0d089;
+    --warn-border: #5c4a1f;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  line-height: 1.55;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.container { max-width: var(--maxw); margin: 0 auto; padding: 1.5rem; }
+
+.skip-link {
+  position: absolute; left: -999px; top: 0;
+  background: var(--accent); color: var(--accent-fg); padding: .5rem 1rem; z-index: 100;
+}
+.skip-link:focus { left: 0; }
+
+.site-nav {
+  display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem;
+}
+.site-nav .brand { font-weight: 700; margin-right: auto; }
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem 1.25rem;
+}
+.grid { display: grid; gap: 1rem; }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; }
+
+.muted { color: var(--muted); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.badge {
+  display: inline-block; padding: .1rem .5rem; border-radius: 999px;
+  border: 1px solid var(--border); font-size: .8rem;
+}
+
+.warnings {
+  background: var(--warn-bg); color: var(--warn-fg);
+  border: 1px solid var(--warn-border); border-radius: var(--radius);
+  padding: .75rem 1rem; margin: 1rem 0;
+}
+.warnings ul { margin: .25rem 0 0; padding-left: 1.2rem; }
+
+label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+input, select {
+  width: 100%; padding: .55rem .6rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg);
+}
+button {
+  background: var(--accent); color: var(--accent-fg); border: none;
+  border-radius: 8px; padding: .6rem 1.1rem; font-weight: 600; cursor: pointer;
+}
+button:hover { filter: brightness(1.05); }
+
+footer.site-footer {
+  border-top: 1px solid var(--border); margin-top: 3rem;
+  padding: 1.5rem; font-size: .85rem; color: var(--muted);
+}
