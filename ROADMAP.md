@@ -44,4 +44,4 @@ Salida en 4 fases. El MVP **no** intenta cobertura legal total desde el día 1.
 2. Versionar todo (HS version, ligie_version, effective_from/to).
 3. Mostrar fecha efectiva + fuente primaria en cada pantalla.
 4. Degradar con elegancia cuando una fuente falle.
-5. La capa `ai/` nunca calcula tasas — solo sugiere clasificación y busca sobre el corpus indexado.
+5. La capa `ai/` nunca calcula tasas — solo recupera datos de Sistema Harmonizada sugiere clasificación y busca sobre el corpus indexado.
