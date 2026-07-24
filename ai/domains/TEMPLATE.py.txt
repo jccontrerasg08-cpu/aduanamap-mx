@@ -1,0 +1,56 @@
+# TEMPLATE for a new customs domain module.
+#
+# Copy to ai/domains/<topic>.py (this .txt is NOT importable, so the registry
+# ignores it). Add the matching seed at data/seed/<topic>.json and a test at
+# tests/ai/test_<topic>.py. You do NOT need to register anything anywhere:
+# ai/domains/__init__.py discovers *.py by glob.
+#
+# HARD RULES (enforced by tests/ai/test_security_domains.py):
+#   1. Never state tariff rates, percentages or monetary amounts. Structure and
+#      definitions only. Rate questions are refused upstream by the assistant.
+#   2. Every fact must come from SEED, and each seed entry must carry a real,
+#      verifiable `source` URL. If you could not verify it, DO NOT include it —
+#      declare the gap in _meta.coverage.not_enumerated instead.
+#   3. Never put internal paths, filenames or env vars in `sources`; cite
+#      domain-facing names (e.g. "SNICE", "ANAM", "DOF").
+#   4. Spanish is the primary language; add `name_en` where it makes sense.
+
+from __future__ import annotations
+
+import re
+
+from .. import knowledge
+
+NAME = "mi_tema"                 # unique id, snake_case
+SEED = "mi_tema.json"            # file in data/seed/
+PRIORITY = 50                    # optional: lower matches first
+
+# Keep the matcher cheap and specific — it must not swallow unrelated questions.
+_PAT = re.compile(r"\b(palabra_clave|otra_clave)\b", re.IGNORECASE)
+
+
+def match(q: str) -> bool:
+    return bool(_PAT.search(q or ""))
+
+
+def answer(q: str, lang: str = "es") -> dict:
+    doc = knowledge.load_seed(SEED)          # {} if the seed is missing
+    entries = doc.get("entries", [])
+    if not entries:
+        return {
+            "answer": ("Aún no tengo cargada esa información."
+                       if lang != "en" else "I don't have that information loaded yet."),
+            "warnings": ["no confirmable: seed no disponible"],
+        }
+
+    # …find the relevant entry/entries and build prose from them only…
+    hit = entries[0]
+    text = f"{hit['term']}: {hit['definition']}"
+
+    return {
+        "answer": text,
+        "data": {"entry": hit},
+        # Cite the real-world source, taken from the seed entry.
+        "sources": [{"source": hit.get("source_name", "SNICE"), "label": NAME}],
+        "warnings": [],
+    }

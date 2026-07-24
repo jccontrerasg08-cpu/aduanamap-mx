@@ -50,6 +50,39 @@ def _countries_path() -> Path | None:
     )
 
 
+def seed_path(filename: str) -> Path | None:
+    """Locate a curated seed file in data/seed/, wherever the app is running from.
+
+    Shared by every `ai.domains.*` module so seed loading behaves identically in
+    local dev, tests and the Docker image (where data/seed is copied next to ai/).
+    """
+    # SEED_DIR, when set, is a DIRECTORY containing the seed files.
+    override_dir = os.getenv("SEED_DIR")
+    if override_dir:
+        candidate = Path(override_dir) / filename
+        if candidate.exists():
+            return candidate
+    for c in (_REPO / "data" / "seed" / filename,
+              Path.cwd() / "data" / "seed" / filename,
+              _AI_DIR / "data" / filename):
+        if c.exists():
+            return c
+    return None
+
+
+@lru_cache(maxsize=32)
+def load_seed(filename: str) -> dict:
+    """Load and cache a seed JSON. Returns {} when the file is absent, so a domain
+    with no data degrades to "no confirmable" instead of raising."""
+    p = seed_path(filename)
+    if p is None:
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def _norm(text: str) -> str:
     """Lowercase + strip accents, for tolerant name matching (Japón == japon)."""
     n = unicodedata.normalize("NFKD", text.lower())

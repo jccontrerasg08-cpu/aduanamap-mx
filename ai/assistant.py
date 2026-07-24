@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import re
 
-from . import guard, knowledge
+from . import domains, guard, knowledge
 
 MAX_Q = 500
 
@@ -50,12 +50,21 @@ def _t(lang: str, es: str, en: str) -> str:
     return en if lang == "en" else es
 
 
-def _result(answer, *, data=None, warnings=None, grounded=True, lang="es"):
+def _result(answer, *, data=None, warnings=None, grounded=True, lang="es", sources=None):
+    """Build the assistant's response.
+
+    `sources` lets a domain module supply its own citations; otherwise the FTA
+    catalog sources are used. Either way the text is scrubbed before returning.
+    """
     warns = list(warnings or [])
     warns.append(_t(lang, _DISCLAIMER_ES, _DISCLAIMER_EN))
+    if sources is not None:
+        trace = sources
+    else:
+        trace = _SRC if grounded else []
     # Final belt-and-braces pass: nothing secret-shaped ever leaves this function.
     return {"answer": guard.scrub_output(answer), "data": data or {},
-            "source_trace": _SRC if grounded else [], "warnings": warns, "grounded": grounded}
+            "source_trace": trace, "warnings": warns, "grounded": grounded}
 
 
 def _fmt_agreement(a: dict, lang: str) -> str:
@@ -223,13 +232,25 @@ def answer(question: str, lang: str = "es") -> dict:
             _t(lang, f"TLC vigentes de México: {listing}.", f"Mexico's FTAs in force: {listing}."),
             data={"agreements": [a["slug"] for a in active]}, lang=lang)
 
-    # 6) Fallback — say what it can do (no guessing).
+    # 6) Domain registry — auto-discovered customs topics (HS/TIGIE, glosario, DOF…).
+    # Placed AFTER the FTA intents so existing correct behavior is never overridden,
+    # and AFTER the rate refusal so no domain can answer a rate question.
+    routed = domains.try_answer(q, lang)
+    if routed is not None:
+        return _result(routed["answer"], data=routed["data"],
+                       warnings=routed["warnings"], lang=lang,
+                       sources=routed["sources"])
+
+    # 7) Fallback — say what it can do (no guessing).
+    topics = ", ".join(domains.names())
+    extra_es = f" También cubro: {topics}." if topics else ""
+    extra_en = f" I also cover: {topics}." if topics else ""
     return _result(
         _t(lang,
            "Puedo responder sobre los tratados de libre comercio de México: qué países cubren, "
            "fechas de vigencia, miembros y el conteo según fuente. Pregunta por un país (p. ej. "
-           "«¿México tiene TLC con Japón?») o por un tratado (p. ej. «T-MEC», «CPTPP»).",
+           "«¿México tiene TLC con Japón?») o por un tratado (p. ej. «T-MEC», «CPTPP»)." + extra_es,
            "I can answer about Mexico's free-trade agreements: which countries they cover, entry "
            "dates, members, and the count by source. Ask about a country (e.g. \"does Mexico have "
-           "an FTA with Japan?\") or an agreement (e.g. \"USMCA\", \"CPTPP\")."),
+           "an FTA with Japan?\") or an agreement (e.g. \"USMCA\", \"CPTPP\")." + extra_en),
         grounded=False, lang=lang)
