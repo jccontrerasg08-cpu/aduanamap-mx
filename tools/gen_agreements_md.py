@@ -89,6 +89,30 @@ def main() -> int:
         L.append(f"| {c['source_name']} | {c['claim_type']} | **{c['claim_value']}** "
                  f"| {c['consulted_at']} | {c.get('notes', '')} |")
 
+    for sl in doc.get("source_listings", []):
+        L += ["", f"## Listado según {sl['source_name']} (evidencia documental)", "",
+              f"Fuente: {sl.get('url', '—')} · Consultado: {sl['consulted_at']}", "",
+              f"> {sl.get('capture_note', '')}", "",
+              "**Totales que afirma la fuente:**", ""]
+        for k, v in (sl.get("stated_totals") or {}).items():
+            L.append(f"- {k}: {v}")
+        L += ["", "**Instrumentos que lista:**", "",
+              "| Instrumento | Miembros | Entrada en vigor |", "|---|---|---:|"]
+        for it in sl.get("listed_instruments", []):
+            mem = ", ".join(it.get("members", [])) or f"{it.get('members_stated_count', '—')} países"
+            L.append(f"| {it['name']} | {mem} | {it.get('effective_date', '—')} |")
+        divs = sl.get("divergences_vs_canonical", [])
+        if divs:
+            L += ["", f"**⚠️ Divergencias documentadas vs. el catálogo canónico ({len(divs)}):**", ""]
+            for d in divs:
+                L.append(f"- {d}")
+        if sl.get("assessment"):
+            L += ["", f"**Valoración:** {sl['assessment']}"]
+        if sl.get("appri_examples"):
+            L += ["", "**Ejemplos de APPRI que cita:**", ""]
+            for ap in sl["appri_examples"]:
+                L.append(f"- {ap['name']} ({ap['partner']}) — en vigor {ap['effective_date']}")
+
     L += ["", "## Cobertura de este catálogo", "",
           f"- **Incluido:** {cov.get('included', '—')}",
           f"- **No enumerado:** {cov.get('not_enumerated', '—')}", "",

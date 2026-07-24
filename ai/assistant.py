@@ -113,7 +113,31 @@ def answer(question: str, lang: str = "es") -> dict:
         return _result(note, data=extra, warnings=["no confirmable: tasa/regla de origen"],
                        grounded=bool(country), lang=lang)
 
-    # 2) Count questions.
+    # 2) Questions about what a specific source says (traceability payoff).
+    m_src = re.search(r"\b(seg[uú]n|dice|according to|fuente)\b.{0,20}\b(anam|se|sice|sre)\b",
+                      q, re.IGNORECASE)
+    if m_src:
+        listing = knowledge.get_source_listing(m_src.group(2))
+        if listing:
+            totals = listing.get("stated_totals", {})
+            divs = listing.get("divergences_vs_canonical", [])
+            txt = _t(lang,
+                     f"Según {listing['source_name']} (consultado {listing['consulted_at']}): "
+                     f"{totals.get('tlc', '—')}, {totals.get('appri', '—')}, "
+                     f"{totals.get('aladi_alcance_limitado', '—')}. "
+                     f"Advertencia importante: ese listado está desactualizado frente al estado "
+                     f"vigente. {len(divs)} divergencias documentadas, p. ej.: {divs[0] if divs else ''}",
+                     f"According to {listing['source_name']} (consulted {listing['consulted_at']}): "
+                     f"{totals.get('tlc', '—')}, {totals.get('appri', '—')}, "
+                     f"{totals.get('aladi_alcance_limitado', '—')}. "
+                     f"Important caveat: that listing is out of date versus what is currently in "
+                     f"force. {len(divs)} documented divergences, e.g.: {divs[0] if divs else ''}")
+            return _result(txt, data={"source": listing["source_name"],
+                                      "stated_totals": totals, "divergences": divs},
+                           warnings=[f"{listing['source_name']}: " + listing.get("assessment", "")],
+                           lang=lang)
+
+    # 3) Count questions.
     if _COUNT_WORDS.search(q):
         active = knowledge.ftas(active_only=True)
         partners = knowledge.partner_country_count()

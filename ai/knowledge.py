@@ -194,5 +194,20 @@ def source_claims() -> list[dict]:
     return _agreements_doc().get("source_claims", [])
 
 
+def source_listings() -> list[dict]:
+    """Verbatim listings captured from a source, with their documented divergences.
+
+    A source can be institutionally authoritative yet stale (ANAM still lists TLCAN
+    and Venezuela in the G3). We record what it says + how it differs, instead of
+    silently "correcting" it or letting it overwrite the current catalog.
+    """
+    return _agreements_doc().get("source_listings", [])
+
+
+def get_source_listing(source_name: str) -> dict | None:
+    target = _norm(source_name)
+    return next((s for s in source_listings() if _norm(s["source_name"]) == target), None)
+
+
 def consulted_at() -> str | None:
     return _agreements_doc().get("_meta", {}).get("consulted_at")

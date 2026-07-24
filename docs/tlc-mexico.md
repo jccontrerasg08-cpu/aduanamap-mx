@@ -84,6 +84,56 @@ El total **difiere entre fuentes oficiales** por criterio de agrupación. No es 
 | ANAM | appri_count | **32** | 2026-07-24 | ANAM reporta 32 APPRIs con 33 países — difiere de los 30/31 de SE (criterio distinto). |
 | ANAM | aladi_limited_scope_count | **9** | 2026-07-24 | Coincide con SE en los 9 acuerdos de alcance limitado de ALADI. |
 
+## Listado según ANAM (evidencia documental)
+
+Fuente: https://www.anam.gob.mx/tratados-y-acuerdos-con-mexico/ · Consultado: 2026-07-24
+
+> La página bloquea acceso automatizado (HTTP 403); contenido capturado manualmente por el usuario. Se registra VERBATIM lo que la fuente afirma, sin corregirlo.
+
+**Totales que afirma la fuente:**
+
+- tlc: 12 TLC con 46 países
+- appri: 32 APPRI con 33 países
+- aladi_alcance_limitado: 9 acuerdos
+- otros: Miembro del Tratado de Asociación Transpacífico
+
+**Instrumentos que lista:**
+
+| Instrumento | Miembros | Entrada en vigor |
+|---|---|---:|
+| TLC México–Bolivia | BOL | 1995-01-01 |
+| TLC del Grupo de los Tres (G3) | COL, VEN | 1995-01-01 |
+| TLC de América del Norte (TLCAN) | USA, CAN | 1994-01-01 |
+| TLC México–Costa Rica | CRI | 1995-01-01 |
+| TLC México–Nicaragua | NIC | 1998-07-01 |
+| TLC México–Chile | CHL | 1999-08-01 |
+| TLC México–Israel | ISR | 2000-07-01 |
+| TLC México–Unión Europea (TLCUEM) | 25 países | 2000-07-01 |
+| TLC México–Triángulo del Norte | SLV, GTM, HND | 2001-03-15 |
+| TLC México–AELC | ISL, NOR, LIE, CHE | 2001-07-01 |
+| TLC México–Uruguay | URY | 2004-07-15 |
+| TLC México–Colombia | COL | 2011-08-02 |
+
+**⚠️ Divergencias documentadas vs. el catálogo canónico (9):**
+
+- ANAM lista el TLCAN (1994). El instrumento vigente es el T-MEC, en vigor desde 2020-07-01.
+- ANAM incluye a Venezuela en el G3. Venezuela se retiró del G3 en 2006; hoy es bilateral México–Colombia.
+- ANAM incluye al Reino Unido en el TLCUEM. El RU salió de la UE (2020); su vínculo actual con México es vía CPTPP (adhesión en diciembre de 2024).
+- ANAM enumera 25 Estados en el TLCUEM. La UE tiene 27 (faltan Bulgaria, Rumania y Croacia).
+- ANAM lista el TLC México–Bolivia como vigente. Fue sustituido por el ACE 66 en 2010.
+- ANAM lista Costa Rica, Nicaragua y Triángulo del Norte por separado. Se unificaron en el TLC México–Centroamérica (2013).
+- ANAM NO lista: AAE México–Japón (2005), ACI México–Perú (2012), TLC México–Panamá (2015), Alianza del Pacífico (2016), CPTPP/TIPAT (2018) ni el TLC México–Centroamérica (2013).
+- Fecha del TLC México–AELC: ANAM indica 2001-07-01; SICE y otras fuentes indican 2001-10-01.
+- ANAM reporta 32 APPRIs/33 países; SE reporta 30/31.
+
+**Valoración:** Listado institucionalmente autoritativo pero desactualizado en contenido (parece reflejar el estado previo a 2013). Útil como evidencia documental y para el criterio de conteo de ANAM; NO debe usarse como fuente de vigencia actual.
+
+**Ejemplos de APPRI que cita:**
+
+- México–Países Bajos (NLD) — en vigor 1999-10-01
+- México–España (ESP) — en vigor 2008-04-03
+- México–Finlandia (FIN) — en vigor 2000-08-20
+
 ## Cobertura de este catálogo
 
 - **Incluido:** TLC/acuerdos de libre comercio vigentes y superados, y ACE/AAP de alcance parcial de ALADI nombrados.
