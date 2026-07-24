@@ -39,7 +39,8 @@ Los **13** endpoints del informe existen y devuelven el envelope `data/source_tr
 | Todas las tablas del informe | ✅ | 22 tablas (0001+0002); verificado que no falta ninguna |
 | Integridad de FKs | ✅ | verificado: todas las `REFERENCES` resuelven |
 | `agreement_source_claim` (SE 14/52 vs ANAM 12/46) | ✅ tabla + datos | `data/seed/agreements.json` incluye los 5 claims; conteo "según fuente" modelado |
-| Catálogo de TLC de México (14 TLC / 52 países) | ✅ | `data/seed/agreements.json`: 13 instrumentos vigentes + 2 superados; **52 países socios distintos = cifra oficial SE**; `seed_agreements.py` los carga; 7 tests |
+| Catálogo de TLC de México (14 TLC / 52 países) | ✅ | `data/seed/agreements.json`: **13 TLC vigentes + 5 ACE/AAP de ALADI + 4 superados** (22 instrumentos); **52 países socios = cifra oficial SE**; vista legible en [tlc-mexico.md](tlc-mexico.md) generada desde el JSON (test de sincronía) |
+| Seguridad de la capa IA (inyección / fuga) | ✅ | `ai/guard.py`: rechaza prompt-injection y sondeos de secretos con negativa fija; `scrub_output()` redacta; `source_trace` sin rutas internas; rate limit 10/min; ~44 tests de seguridad |
 | Migraciones ejecutadas contra PostGIS | ⛔ | **Docker no disponible en este entorno**; nunca se han corrido |
 | Datos reales cargados | ⛔ | depende de lo anterior; endpoints devuelven vacío + warning (correcto) |
 

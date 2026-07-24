@@ -38,7 +38,7 @@ def test_answers_country_with_agreement_and_cites_source():
     assert "Japón" in r["answer"]
     assert "2005-04-01" in r["answer"]  # effective date from the catalog
     assert r["grounded"] is True
-    assert any(s["source"] == "SE/SICE" for s in r["source_trace"])
+    assert any("Secretaría de Economía" in s["source"] for s in r["source_trace"])
     # Japan is covered by BOTH the bilateral EPA and CPTPP — both must surface.
     assert set(r["data"]["agreements"]) == {"aae-mexico-japon", "cptpp-tipat"}
 

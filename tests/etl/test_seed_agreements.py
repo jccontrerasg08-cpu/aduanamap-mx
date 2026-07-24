@@ -50,6 +50,30 @@ def test_source_claims_capture_the_disagreement():
     assert by_source[("ANAM", "tlc_count")] == "12"
 
 
+def test_partial_scope_is_never_labeled_as_fta():
+    """An ACE/AAP must be clearly marked: conflating it with a TLC misleads users."""
+    for a in AGREEMENTS:
+        if a["type"] in {"ACE", "AAP"}:
+            assert a.get("scope"), f"{a['slug']} sin 'scope'"
+            assert "NO es un TLC" in (a.get("notes") or ""), f"{a['slug']} sin aviso explícito"
+
+
+def test_generated_markdown_is_in_sync_with_the_json():
+    """docs/tlc-mexico.md is generated; it must match the current seed."""
+    import subprocess
+
+    repo = Path(seed_agreements.SEED).resolve().parents[2]
+    md = repo / "docs" / "tlc-mexico.md"
+    if not md.exists():
+        pytest.skip("docs/tlc-mexico.md no generado aún")
+    before = md.read_text(encoding="utf-8")
+    subprocess.run([sys.executable, str(repo / "tools" / "gen_agreements_md.py")],
+                   check=True, capture_output=True, cwd=repo)
+    assert md.read_text(encoding="utf-8") == before, (
+        "docs/tlc-mexico.md está desincronizado; corre python tools/gen_agreements_md.py"
+    )
+
+
 @pytest.mark.skipif(not seed_agreements.GEOJSON.exists(), reason="geojson no generado")
 def test_every_member_iso3_is_a_known_country():
     known = seed_agreements._known_iso3()

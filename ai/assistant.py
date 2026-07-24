@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import re
 
-from . import knowledge
+from . import guard, knowledge
 
 MAX_Q = 500
 
@@ -33,9 +33,12 @@ _RATE_WORDS = re.compile(
 _COUNT_WORDS = re.compile(r"\b(cu[aá]ntos|cuantos|how many|n[uú]mero de|total de)\b", re.IGNORECASE)
 _LIST_WORDS = re.compile(r"\b(lista|list|cu[aá]les|cuales|todos|all|enumera)\b", re.IGNORECASE)
 
+# Domain-facing source names only. Internal file paths are deliberately NOT exposed
+# (they are technical detail unrelated to foreign trade — see ai/guard.py).
 _SRC = [
-    {"source": "SE/SICE", "label": "catalogo_tlc"},
-    {"source": "data/seed/agreements.json", "label": "curado"},
+    {"source": "Secretaría de Economía / SICE-OEA", "label": "red de tratados"},
+    {"source": "ANAM", "label": "tratados y acuerdos con México"},
+    {"source": "Catálogo AduanaMap", "label": "curado y versionado"},
 ]
 _DISCLAIMER_ES = ("Información de referencia con base en fuentes oficiales; no es asesoría "
                   "legal ni aduanera. Verifica la fuente primaria antes de operar.")
@@ -50,8 +53,9 @@ def _t(lang: str, es: str, en: str) -> str:
 def _result(answer, *, data=None, warnings=None, grounded=True, lang="es"):
     warns = list(warnings or [])
     warns.append(_t(lang, _DISCLAIMER_ES, _DISCLAIMER_EN))
-    return {"answer": answer, "data": data or {}, "source_trace": _SRC if grounded else [],
-            "warnings": warns, "grounded": grounded}
+    # Final belt-and-braces pass: nothing secret-shaped ever leaves this function.
+    return {"answer": guard.scrub_output(answer), "data": data or {},
+            "source_trace": _SRC if grounded else [], "warnings": warns, "grounded": grounded}
 
 
 def _fmt_agreement(a: dict, lang: str) -> str:
@@ -69,6 +73,13 @@ def answer(question: str, lang: str = "es") -> dict:
             _t(lang, "Formula una pregunta sobre los TLC de México (por país o por tratado).",
                "Ask a question about Mexico's FTAs (by country or by agreement)."),
             grounded=False, lang=lang)
+
+    # Security gate BEFORE any retrieval or generation. The refusal is fixed and
+    # never echoes the payload, so the response can't carry an injection downstream.
+    threat = guard.classify_input(q)
+    if threat is not None:
+        return _result(_t(lang, guard.REFUSAL_ES, guard.REFUSAL_EN),
+                       warnings=[f"solicitud rechazada: {threat}"], grounded=False, lang=lang)
 
     if not knowledge.data_available():
         return _result(
@@ -104,7 +115,7 @@ def answer(question: str, lang: str = "es") -> dict:
 
     # 2) Count questions.
     if _COUNT_WORDS.search(q):
-        active = knowledge.agreements(active_only=True)
+        active = knowledge.ftas(active_only=True)
         partners = knowledge.partner_country_count()
         claims = knowledge.source_claims()
         se = next((c for c in claims if c["source_name"] == "SE" and c["claim_type"] == "tlc_count"), None)
@@ -141,25 +152,48 @@ def answer(question: str, lang: str = "es") -> dict:
     country = knowledge.resolve_country(q)
     if country:
         ags = knowledge.agreements_for_country(country["iso3"])
+        partial = knowledge.partial_scope_for_country(country["iso3"])
         cname = country["name_en"] if lang == "en" else country["name_es"]
-        if not ags:
+
+        if not ags and not partial:
             return _result(
                 _t(lang,
                    f"Según el catálogo, México no tiene un TLC vigente con {cname}. Podría existir un "
-                   f"APPRI o acuerdo de alcance parcial no incluido aquí; verifica en SE/SICE.",
-                   f"Per the catalog, Mexico has no FTA in force with {cname}. An APPRI or partial-scope "
-                   f"agreement not included here may exist; verify with SE/SICE."),
-                data={"country": country["iso3"], "agreements": []},
-                warnings=["no confirmable: cobertura limitada a TLC del catálogo"], lang=lang)
-        listing = "; ".join(_fmt_agreement(a, lang) for a in ags)
-        txt = _t(lang, f"México tiene trato preferencial con {cname} vía: {listing}.",
-                 f"Mexico has preferential treatment with {cname} via: {listing}.")
-        return _result(txt, data={"country": country["iso3"],
-                                  "agreements": [a["slug"] for a in ags]}, lang=lang)
+                   f"APPRI (acuerdo de inversión) no enumerado aquí; verifica en SE/SICE.",
+                   f"Per the catalog, Mexico has no FTA in force with {cname}. An APPRI (investment "
+                   f"treaty) not enumerated here may exist; verify with SE/SICE."),
+                data={"country": country["iso3"], "agreements": [], "partial_scope": []},
+                warnings=["no confirmable: los APPRIs no están enumerados en el catálogo"], lang=lang)
+
+        parts: list[str] = []
+        if ags:
+            parts.append(_t(lang,
+                            f"México tiene trato preferencial con {cname} vía: "
+                            + "; ".join(_fmt_agreement(a, lang) for a in ags),
+                            f"Mexico has preferential treatment with {cname} via: "
+                            + "; ".join(_fmt_agreement(a, lang) for a in ags)))
+        if partial:
+            # Critical honesty: an ACE is NOT an FTA.
+            listing = "; ".join(_fmt_agreement(a, lang) for a in partial)
+            if ags:
+                parts.append(_t(lang, f"Además, acuerdos de alcance parcial (no son TLC): {listing}",
+                                f"Additionally, partial-scope agreements (not FTAs): {listing}"))
+            else:
+                parts.append(_t(lang,
+                                f"México NO tiene un TLC con {cname}, pero sí acuerdos de alcance "
+                                f"parcial de ALADI (preferencias sobre un universo limitado de "
+                                f"productos, no libre comercio pleno): {listing}",
+                                f"Mexico has NO FTA with {cname}, but it does have ALADI partial-scope "
+                                f"agreements (preferences on a limited product universe, not full free "
+                                f"trade): {listing}"))
+        return _result(". ".join(parts) + ".",
+                       data={"country": country["iso3"],
+                             "agreements": [a["slug"] for a in ags],
+                             "partial_scope": [a["slug"] for a in partial]}, lang=lang)
 
     # 5) List all.
     if _LIST_WORDS.search(q):
-        active = knowledge.agreements(active_only=True)
+        active = knowledge.ftas(active_only=True)
         listing = "; ".join(_fmt_agreement(a, lang) for a in active)
         return _result(
             _t(lang, f"TLC vigentes de México: {listing}.", f"Mexico's FTAs in force: {listing}."),

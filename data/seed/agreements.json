@@ -3,11 +3,19 @@
     "description": "Catálogo canónico de Tratados de Libre Comercio (TLC) de México y sus miembros, para sembrar las tablas agreement / agreement_member / agreement_source_claim. Miembros en ISO-3166 alpha-3 (socios de México; México es el país anfitrión y no se lista como miembro). Cargar con: python -m workers.seed_agreements",
     "sources": [
       "Secretaría de Economía (gob.mx/se) — red de TLC",
-      "SICE-OEA (sice.oas.org)",
+      "SE-SNCI / ALADI: http://www.economia-snci.gob.mx/sic_php/pages/organismos/aladi/mexico_aladi.php",
+      "SICE-OEA: http://www.sice.oas.org/agreements_s.asp",
+      "SRE — buscador de tratados: https://aplicaciones.sre.gob.mx/tratados/",
+      "ANAM — tratados y acuerdos: https://www.anam.gob.mx/tratados-y-acuerdos-con-mexico/",
       "Wikipedia ES: Tratados de libre comercio de México",
       "Prodensa blog (lista divulgativa, punto de partida del usuario)"
     ],
-    "consulted_at": "2026-07-23",
+    "consulted_at": "2026-07-24",
+    "coverage": {
+      "included": "TLC/acuerdos de libre comercio vigentes y superados, y ACE/AAP de alcance parcial de ALADI nombrados.",
+      "not_enumerated": "Los ~30 APPRIs (acuerdos de inversión) no se enumeran individualmente; SE reporta 30 APPRIs con 31 países/regiones. SE también reporta 9 acuerdos de alcance limitado en ALADI: aquí se nombran los 5 principales (ACE 6, 51, 53, 55, 66).",
+      "warning": "Un ACE/AAP NO es un TLC: otorga preferencias sobre un universo limitado de productos."
+    },
     "note": "El conteo total varía por criterio de fuente; ver source_claims. Los instrumentos 'superseded' se conservan por trazabilidad histórica."
   },
 
@@ -16,7 +24,11 @@
     { "source_name": "SE", "claim_type": "country_count", "claim_value": "52", "consulted_at": "2026-07-23" },
     { "source_name": "ANAM", "claim_type": "tlc_count", "claim_value": "12", "consulted_at": "2026-07-23", "notes": "ANAM: 12 TLC con 46 países (criterio distinto de agrupación)." },
     { "source_name": "ANAM", "claim_type": "country_count", "claim_value": "46", "consulted_at": "2026-07-23" },
-    { "source_name": "Wikipedia", "claim_type": "tlc_count", "claim_value": "13", "consulted_at": "2026-07-23", "notes": "13 TLC con 46 países (según artículo)." }
+    { "source_name": "Wikipedia", "claim_type": "tlc_count", "claim_value": "13", "consulted_at": "2026-07-23", "notes": "13 TLC con 46 países (según artículo)." },
+    { "source_name": "SE", "claim_type": "appri_count", "claim_value": "30", "consulted_at": "2026-07-24", "notes": "30 APPRIs con 31 países o regiones administrativas (no enumerados individualmente en este catálogo)." },
+    { "source_name": "SE", "claim_type": "aladi_limited_scope_count", "claim_value": "9", "consulted_at": "2026-07-24", "notes": "9 acuerdos de alcance limitado (ACE y AAP) en el marco de ALADI; aquí se nombran los 5 principales." },
+    { "source_name": "ANAM", "claim_type": "appri_count", "claim_value": "32", "consulted_at": "2026-07-24", "notes": "ANAM reporta 32 APPRIs con 33 países — difiere de los 30/31 de SE (criterio distinto)." },
+    { "source_name": "ANAM", "claim_type": "aladi_limited_scope_count", "claim_value": "9", "consulted_at": "2026-07-24", "notes": "Coincide con SE en los 9 acuerdos de alcance limitado de ALADI." }
   ],
 
   "agreements": [
@@ -168,6 +180,102 @@
       "members": ["AUS", "BRN", "CAN", "CHL", "JPN", "MYS", "NZL", "PER", "SGP", "VNM", "GBR"],
       "source_policy": "SE/SICE",
       "notes": "Reino Unido (GBR) adhirió en diciembre de 2024."
+    },
+    {
+      "slug": "ace-6-mexico-argentina",
+      "name_es": "ACE 6 — México–Argentina (alcance parcial)",
+      "name_en": "ECA 6 — Mexico–Argentina (partial scope)",
+      "type": "ACE",
+      "scope": "parcial",
+      "status": "active",
+      "signed_date": "1986-10-24",
+      "effective_date": "1987-01-01",
+      "members": ["ARG"],
+      "source_policy": "ALADI/SE-SNCI",
+      "source_ref": "ACE 6",
+      "notes": "NO es un TLC. Preferencias arancelarias sobre un universo limitado de productos; actualizado en 2006."
+    },
+    {
+      "slug": "ace-51-mexico-cuba",
+      "name_es": "ACE 51 — México–Cuba (alcance parcial)",
+      "name_en": "ECA 51 — Mexico–Cuba (partial scope)",
+      "type": "ACE",
+      "scope": "parcial",
+      "status": "active",
+      "signed_date": "2000-10-17",
+      "effective_date": "2001-01-01",
+      "members": ["CUB"],
+      "source_policy": "ALADI/SE-SNCI",
+      "source_ref": "ACE 51",
+      "notes": "NO es un TLC. Preferencias sobre un grupo limitado de productos."
+    },
+    {
+      "slug": "ace-53-mexico-brasil",
+      "name_es": "ACE 53 — México–Brasil (alcance parcial)",
+      "name_en": "ECA 53 — Mexico–Brazil (partial scope)",
+      "type": "ACE",
+      "scope": "parcial",
+      "status": "active",
+      "signed_date": "2002-07-03",
+      "effective_date": "2003-05-02",
+      "members": ["BRA"],
+      "source_policy": "ALADI/SE-SNCI",
+      "source_ref": "ACE 53",
+      "notes": "NO es un TLC. Preferencias sobre un universo limitado de productos."
+    },
+    {
+      "slug": "ace-55-mexico-mercosur-automotor",
+      "name_es": "ACE 55 — México–MERCOSUR (sector automotor)",
+      "name_en": "ECA 55 — Mexico–MERCOSUR (automotive sector)",
+      "type": "ACE",
+      "scope": "sectorial",
+      "status": "active",
+      "signed_date": "2002-09-27",
+      "effective_date": "2003-01-01",
+      "members": ["ARG", "BRA", "PRY", "URY"],
+      "source_policy": "ALADI/SE-SNCI",
+      "source_ref": "ACE 55",
+      "notes": "NO es un TLC. Cubre exclusivamente vehículos y autopartes."
+    },
+    {
+      "slug": "ace-66-mexico-bolivia",
+      "name_es": "ACE 66 — México–Bolivia (alcance parcial)",
+      "name_en": "ECA 66 — Mexico–Bolivia (partial scope)",
+      "type": "ACE",
+      "scope": "parcial",
+      "status": "active",
+      "signed_date": "2010-05-17",
+      "effective_date": "2010-06-07",
+      "members": ["BOL"],
+      "source_policy": "ALADI/SE-SNCI",
+      "source_ref": "ACE 66",
+      "notes": "NO es un TLC. Sustituyó al TLC México–Bolivia (1995), que quedó sin efecto."
+    },
+    {
+      "slug": "tlc-mexico-bolivia-1995",
+      "name_es": "TLC México–Bolivia (1995)",
+      "name_en": "Mexico–Bolivia FTA (1995)",
+      "type": "FTA",
+      "status": "superseded",
+      "signed_date": "1994-09-10",
+      "effective_date": "1995-01-01",
+      "members": ["BOL"],
+      "source_policy": "SICE",
+      "superseded_by": "ace-66-mexico-bolivia",
+      "notes": "Sustituido por el ACE 66 (2010)."
+    },
+    {
+      "slug": "tlc-mexico-nicaragua-1998",
+      "name_es": "TLC México–Nicaragua (1998)",
+      "name_en": "Mexico–Nicaragua FTA (1998)",
+      "type": "FTA",
+      "status": "superseded",
+      "signed_date": "1997-12-18",
+      "effective_date": "1998-07-01",
+      "members": ["NIC"],
+      "source_policy": "SICE",
+      "superseded_by": "tlc-mexico-centroamerica",
+      "notes": "Entró en vigor el 2001-03-15 con El Salvador y Guatemala, y el 2001-06-01 con Honduras (ANAM). Absorbido por el TLC México–Centroamérica (2013)."
     },
     {
       "slug": "tlc-mexico-costa-rica-1995",

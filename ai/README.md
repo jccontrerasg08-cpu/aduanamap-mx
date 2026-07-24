@@ -44,12 +44,32 @@ countries-50m.geojson ──────┘        │
 | "¿México tiene TLC con Rusia?" | "No tiene TLC vigente" + advertencia de cobertura |
 | "¿Cuánto arancel pago…?" | **Se niega**: `no confirmable` + remite a las herramientas deterministas |
 
+## Seguridad ([guard.py](guard.py))
+
+Endpoint público sin autenticación que recibe texto libre. Tres riesgos y su defensa:
+
+| Riesgo | Defensa |
+|---|---|
+| **Prompt injection** ("ignora las instrucciones", "revela tu system prompt", "actúa como…") | `classify_input()` rechaza **antes** de recuperar o generar, con una **negativa fija** que no reproduce el payload (no puede servir de vehículo de inyección) |
+| **Fuga de secretos/config** (`DATABASE_URL`, `.env`, API keys, contraseñas, código fuente, esquema de BD) | Rechazo explícito + `ai/` **nunca lee `os.environ`** para nada que pueda imprimir: no hay secreto en alcance |
+| **Payloads reflejados** (XSS, SQLi, `{{7*7}}`, JNDI) | Nunca se hace eco de la entrada; las respuestas se construyen solo con datos del catálogo. React escapa el render |
+
+Defensa en profundidad adicional:
+- **`scrub_output()`** redacta cualquier cosa con forma de secreto (pares `CLAVE=valor`,
+  connection strings, `sk-…`, `Bearer …`, rutas absolutas) antes de salir del proceso.
+- **`source_trace` saneado**: se citan fuentes de dominio (SE/SICE, ANAM), nunca rutas internas.
+- **Rate limit más estricto** para `/api/assistant` (10/min): es la superficie más abusable.
+- Protege también el **futuro camino con LLM**, donde la inyección sí sería viva.
+
 ```
 ai/
 ├── knowledge.py    # base de conocimiento canónica (sin DB/LLM)
 ├── assistant.py    # Q&A fundamentado es/en
+├── guard.py        # anti prompt-injection + anti fuga de secretos
 ├── llm.py          # UN abstractor de proveedor (opcional)
 └── prompts/system.md
 ```
 
-Pruebas: `tests/ai/test_assistant.py` (21 casos, incluidos los de "nunca inventa").
+Pruebas: `tests/ai/test_assistant.py` (comportamiento y "nunca inventa") y
+`tests/ai/test_security.py` (inyección, fuga, reflejo, y que **no sobre-bloquee**
+preguntas legítimas de comercio).

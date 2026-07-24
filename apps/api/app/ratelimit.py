@@ -18,6 +18,8 @@ WINDOW_SECONDS = 60
 
 # Route prefix → requests per WINDOW_SECONDS (report §API pública).
 ROUTE_LIMITS: dict[str, int] = {
+    # Free-text AI surface: tightest bucket, it is the most abuse-prone endpoint.
+    "/api/assistant": 10,
     "/api/classify": 10,
     "/api/calculator": 10,
     "/api/banxico": 20,

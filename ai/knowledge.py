@@ -131,9 +131,27 @@ def resolve_country(text: str, exclude_home: bool = True) -> dict | None:
 
 
 # ── Agreement lookups ───────────────────────────────────────────────────────
-def agreements(active_only: bool = True) -> list[dict]:
+# A free-trade instrument vs. a limited/partial-scope ALADI agreement. Conflating
+# them would mislead: an ACE grants preferences on a limited product universe only.
+FTA_TYPES = {"FTA", "regional", "plurilateral"}
+PARTIAL_TYPES = {"ACE", "AAP"}
+
+
+def agreements(active_only: bool = True, kinds: set[str] | None = None) -> list[dict]:
     items = _agreements_doc().get("agreements", [])
-    return [a for a in items if a.get("status") == "active"] if active_only else list(items)
+    if active_only:
+        items = [a for a in items if a.get("status") == "active"]
+    if kinds is not None:
+        items = [a for a in items if a.get("type") in kinds]
+    return list(items)
+
+
+def ftas(active_only: bool = True) -> list[dict]:
+    return agreements(active_only, kinds=FTA_TYPES)
+
+
+def partial_scope(active_only: bool = True) -> list[dict]:
+    return agreements(active_only, kinds=PARTIAL_TYPES)
 
 
 def get_agreement(slug: str) -> dict | None:
@@ -155,12 +173,19 @@ def find_agreement_by_name(text: str) -> dict | None:
 
 
 def agreements_for_country(iso3: str, active_only: bool = True) -> list[dict]:
-    return [a for a in agreements(active_only) if iso3 in a.get("members", [])]
+    """Free-trade instruments only (what "¿tiene TLC?" actually means)."""
+    return [a for a in ftas(active_only) if iso3 in a.get("members", [])]
+
+
+def partial_scope_for_country(iso3: str, active_only: bool = True) -> list[dict]:
+    """ALADI ACE/AAP covering this country — preferences, but NOT an FTA."""
+    return [a for a in partial_scope(active_only) if iso3 in a.get("members", [])]
 
 
 def partner_country_count(active_only: bool = True) -> int:
+    """Distinct partner countries under free-trade instruments (matches SE's 52)."""
     partners: set[str] = set()
-    for a in agreements(active_only):
+    for a in ftas(active_only):
         partners.update(a.get("members", []))
     return len(partners)
 
