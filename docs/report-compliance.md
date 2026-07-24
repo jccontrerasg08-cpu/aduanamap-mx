@@ -14,7 +14,8 @@ Leyenda: ✅ hecho y verificado · 🟡 parcial · ❌ pendiente · ⛔ bloquead
 | Mostrar fecha efectiva + fuente primaria en cada pantalla | ✅ | `components/Trace.tsx` en todas las páginas |
 | Degradar con elegancia | ✅ | API: envelope + warnings; Web: `lib/api.ts` nunca lanza |
 | Separar público de operativo sensible | ✅ | no se piden credenciales VUCEM ni documentos |
-| `ai/` nunca calcula tasas | ✅ | ADR 0002; `/api/classify/suggest` solo sugiere |
+| `ai/` nunca calcula tasas | ✅ | ADR 0002; `/api/classify/suggest` sugiere y `/api/assistant/ask` **se niega** a dar tasas (`no confirmable`) — 21 tests, incl. 5 parametrizados de rechazo |
+| IA fundamentada (no "IA que adivina") | ✅ | `ai/knowledge.py` + `ai/assistant.py`: responde solo desde el catálogo canónico, cita fuente, funciona **sin DB y sin LLM** |
 
 ## 2. API pública (§Especificación base — 13 endpoints)
 

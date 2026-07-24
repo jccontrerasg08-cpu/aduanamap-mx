@@ -12,5 +12,11 @@ RUN pip install --upgrade pip && pip install .
 
 COPY apps/api/app ./app
 
+# The narrow AI layer + the curated seed data it reads. Kept as sibling paths so
+# `ai/` cannot import the API's rate logic (ADR 0002) and the assistant works with
+# no database. The router locates `ai/` by walking parent dirs, so /app works.
+COPY ai ./ai
+COPY data/seed ./data/seed
+
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

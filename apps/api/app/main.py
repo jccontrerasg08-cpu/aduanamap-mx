@@ -16,7 +16,18 @@ from . import envelope, ratelimit
 from .config import get_settings
 from .logging import get_logger
 from .security import SecurityHeadersMiddleware
-from .routers import agreements, banxico, calculator, classify, countries, health, sources, tariff, wiki
+from .routers import (
+    agreements,
+    assistant,
+    banxico,
+    calculator,
+    classify,
+    countries,
+    health,
+    sources,
+    tariff,
+    wiki,
+)
 
 log = get_logger("api")
 settings = get_settings()
@@ -87,7 +98,8 @@ async def _unhandled(request: Request, exc: Exception):
     return JSONResponse(status_code=500, content=envelope.error("Error interno; el equipo fue notificado."))
 
 
-for r in (health, sources, banxico, tariff, countries, agreements, calculator, classify, wiki):
+for r in (health, sources, banxico, tariff, countries, agreements, calculator, classify, wiki,
+          assistant):
     app.include_router(r.router)
 
 
@@ -105,6 +117,7 @@ def root():
             "/api/banxico/fix/latest", "/api/banxico/series/{id}/latest",
             "/api/calculator/estimate",
             "/api/wiki/{slug}",
+            "/api/assistant/ask",
         ],
         "disclaimer": "Herramienta informativa. No sustituye asesoría legal ni pedimento.",
     }
